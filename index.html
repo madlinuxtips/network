@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chart using XML Data</title>
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="canvasjs.min.js"></script>
+<script type="text/javascript">
+    window.onload = function() {
+        var dataPoints = [];
+	 
+        function getDataPointsFromCSV(csv) {
+            var dataPoints = csvLines = points = [];
+            csvLines = csv.split(/[\r?\n|\r|\n]+/);         
+		        
+            for (var i = 0; i < csvLines.length; i++)
+                if (csvLines[i].length > 0) {
+                    points = csvLines[i].split(",");
+                    dataPoints.push({ 
+                        x: new Date(parseFloat(points[0])*1000), 
+                        y: parseFloat(points[1]) 		
+                    });
+                }
+            return dataPoints;
+        }
+	
+	$.get("data.csv", function(data) {
+	    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+	    zoomEnabled: true,
+		    title: {
+		         text: "LAN LOG",
+		    },
+		    data: [{
+		         type: "line",
+                 xValueFormatString:'DD/MM/Y "at" H:mm',
+		         dataPoints: getDataPointsFromCSV(data)
+		      } ]
+
+	     });
+		
+	      chart.render();
+
+	});
+    $.get("data1.csv", function(data) {
+        var chart1 = new CanvasJS.Chart("chartContainer1", {
+        animationEnabled: true,
+        zoomEnabled: true,
+
+            title: {
+                 text: "WAN LOG",
+            },
+            data: [{
+                 type: "line",
+                 xValueFormatString:'DD/MM/Y "at" H:mm',
+                 dataPoints: getDataPointsFromCSV(data)
+              } ]
+
+         });
+
+          chart1.render();
+
+    });
+
+  }
+</script>
+
+</head>
+<body>
+	<div id="chartContainer" style="width:100%; height:270px;"></div>
+	<div id="chartContainer1" style="width:100%; height:270px"></div>
+</body>
+</html>
